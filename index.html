@@ -11,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!doctype html>
 <html lang="en">
   <head>
+    <base href="/">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
@@ -59,6 +60,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         background-color: #eeeeee;
       }
     </style>
+
+    <script src="//code.jquery.com/jquery-latest.min.js"></script>
+    <script src="//assets.adobedtm.com/0f7d5fd422d067d1a48a3d9f0872ab4d51ac4f95/satelliteLib-440d70bb55778134e1e11b384f08a124dafdb017.js"></script>
   </head>
   <body>
     <my-app>
@@ -71,6 +75,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </my-app>
 
     <script>
+      // Global Constants
+      window.BASE_URL = '/';
+
       // Setup Polymer options
       window.Polymer = {
         dom: 'shadow',
@@ -113,6 +120,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           navigator.serviceWorker.register('service-worker.js');
         });
       }
+
+      // Get Chrome, Chromium, Opera, Vivaldi version
+      function getChromeVersion () {
+        var raw = navigator.userAgent.match(/Chrome\/([0-9]+)\./);
+        return raw ? parseInt(raw[1], 10) : false;
+      };
+      // Get Firefox version
+      function getFirefoxVersion () {
+        var raw = navigator.userAgent.match(/Firefox\/([0-9]+)\./);
+        return raw ? parseInt(raw[1], 10) : false;
+      };
+
+      var chromeVer = getChromeVersion();
+      var firefoxVer = getFirefoxVersion();
+
+      // Load ES6, Internationalization polyfills if browser does not support it
+      // TODO: Add Fetch polyfill - resolve app routing issue in IE11
+      if (!(chromeVer && chromeVer >= 46 || firefoxVer && firefoxVer >= 40)) {
+        var script = document.createElement('script');
+        script.src = 'bower_components/babel-polyfill/browser-polyfill.js';
+        document.head.appendChild(script);
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        _satellite.pageBottom();
+      });
     </script>
   </body>
 </html>

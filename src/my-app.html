@@ -8,8 +8,13 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
+<script>
+  // Create namespace for app behaviors
+  window.AppBehaviors = window.AppBehaviors || {};
+</script>
+
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components\app-localize-behavior\app-localize-behavior.html">
+<link rel="import" href="behaviors/app-localize-behavior.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
@@ -111,15 +116,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'my-app',
 
       behaviors: [
-        Polymer.AppLocalizeBehavior
+        AppBehaviors.AppLocalizeBehavior
       ],
 
       properties: {
-        language: {
-          type: String,
-          value: 'en-US',
-          observer: '__languageChanged'
-        },
         page: {
           type: String,
           reflectToAttribute: true,
@@ -131,8 +131,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         '_routePageChanged(routeData.page)'
       ],
 
-      __languageChanged() {
-        this.loadResources(this.resolveUrl(`locales/${this.language}.json`));
+      attached() {
+        this.loadLocales(this.is);
       },
 
       _routePageChanged: function(page) {
