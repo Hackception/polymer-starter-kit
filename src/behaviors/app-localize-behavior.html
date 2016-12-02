@@ -34,10 +34,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       language: {
         type: String,
         value() {
-          var proto = this.constructor.prototype;
+          const proto = this.constructor.prototype;
 
           // http://stackoverflow.com/a/38150585/1614237
-          var lang = navigator.languages && navigator.languages[0] ||  // Chrome / Firefox
+          let lang = navigator.languages && navigator.languages[0] ||  // Chrome / Firefox
                      navigator.language;  // All browsers
 
           if (lang.indexOf('-') !== -1) {
@@ -54,8 +54,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     loadLocales(element) {
-      var url = `${window.BASE_URL}data/locales/${this.language}/${element}.json`;
-      this.loadResources(url);
+      this.loadResources(`${window.BASE_URL}data/locales/${this.language}/${element}.json`);
     }
 
   };

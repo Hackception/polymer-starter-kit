@@ -53,29 +53,59 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <style>
       body {
-        margin: 0;
         font-family: 'Roboto', 'Noto', sans-serif;
         line-height: 1.5;
         min-height: 100vh;
-        background-color: #eeeeee;
+        background-color: #f5f5f5; /* Grey 100 */
+
+        /* Remove highlight when tapping on elements. */
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+        /* Font smoothing for OS X */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+
+        /* Text adjust is set to 100% to avoid iOS Safari bugs where the font-size is
+           sometimes not restored during orientation. */
+        -webkit-text-size-adjust: 100%;
       }
+
+      /* Styling for render while resources are loading. For browsers don't support native Web Components. */
+      my-app[unresolved] {
+        display: block;
+        min-height: 100vh;
+      }
+      my-app[unresolved] .main {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
     </style>
 
-    <script src="//code.jquery.com/jquery-latest.min.js"></script>
-    <script src="//assets.adobedtm.com/0f7d5fd422d067d1a48a3d9f0872ab4d51ac4f95/satelliteLib-440d70bb55778134e1e11b384f08a124dafdb017.js"></script>
+    <!-- <script src="//code.jquery.com/jquery-latest.min.js"></script> -->
+    <!-- <script src="//assets.adobedtm.com/0f7d5fd422d067d1a48a3d9f0872ab4d51ac4f95/satelliteLib-440d70bb55778134e1e11b384f08a124dafdb017.js"></script> -->
   </head>
-  <body>
-    <my-app>
-      <!-- Loading Indicator -->
-      <div class="spinner">
-        <div class="bounce1"></div>
-        <div class="bounce2"></div>
-        <div class="bounce3"></div>
+  <body unresolved>
+    <my-app unresolved>
+      <div class="main">
+        <!-- Loading Indicator -->
+        <div class="sk-three-bounce">
+          <div class="sk-child sk-bounce1"></div>
+          <div class="sk-child sk-bounce2"></div>
+          <div class="sk-child sk-bounce3"></div>
+        </div>
       </div>
     </my-app>
 
     <script>
       // Global Constants
+      window.APP_NAME = 'My App';
       window.BASE_URL = '/';
 
       // Setup Polymer options
@@ -123,28 +153,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       // Get Chrome, Chromium, Opera, Vivaldi version
       function getChromeVersion () {
-        var raw = navigator.userAgent.match(/Chrome\/([0-9]+)\./);
+        const raw = navigator.userAgent.match(/Chrome\/([0-9]+)\./);
         return raw ? parseInt(raw[1], 10) : false;
       };
       // Get Firefox version
       function getFirefoxVersion () {
-        var raw = navigator.userAgent.match(/Firefox\/([0-9]+)\./);
+        const raw = navigator.userAgent.match(/Firefox\/([0-9]+)\./);
         return raw ? parseInt(raw[1], 10) : false;
       };
 
-      var chromeVer = getChromeVersion();
-      var firefoxVer = getFirefoxVersion();
+      const chromeVer = getChromeVersion();
+      const firefoxVer = getFirefoxVersion();
 
       // Load ES6, Internationalization polyfills if browser does not support it
       // TODO: Add Fetch polyfill - resolve app routing issue in IE11
       if (!(chromeVer && chromeVer >= 46 || firefoxVer && firefoxVer >= 40)) {
-        var script = document.createElement('script');
+        const script = document.createElement('script');
         script.src = 'bower_components/babel-polyfill/browser-polyfill.js';
         document.head.appendChild(script);
       }
 
       document.addEventListener('DOMContentLoaded', () => {
-        _satellite.pageBottom();
+        window._satellite && window._satellite.pageBottom();
       });
     </script>
   </body>
