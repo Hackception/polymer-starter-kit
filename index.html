@@ -103,6 +103,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </div>
     </my-app>
 
+    <script src="/bower_components/babel-polyfill/browser-polyfill.js"></script>
     <script>
       // Global Constants
       window.APP_NAME = 'My App';
@@ -149,28 +150,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('service-worker.js');
         });
-      }
-
-      // Get Chrome, Chromium, Opera, Vivaldi version
-      function getChromeVersion () {
-        const raw = navigator.userAgent.match(/Chrome\/([0-9]+)\./);
-        return raw ? parseInt(raw[1], 10) : false;
-      };
-      // Get Firefox version
-      function getFirefoxVersion () {
-        const raw = navigator.userAgent.match(/Firefox\/([0-9]+)\./);
-        return raw ? parseInt(raw[1], 10) : false;
-      };
-
-      const chromeVer = getChromeVersion();
-      const firefoxVer = getFirefoxVersion();
-
-      // Load ES6, Internationalization polyfills if browser does not support it
-      // TODO: Add Fetch polyfill - resolve app routing issue in IE11
-      if (!(chromeVer && chromeVer >= 46 || firefoxVer && firefoxVer >= 40)) {
-        const script = document.createElement('script');
-        script.src = 'bower_components/babel-polyfill/browser-polyfill.js';
-        document.head.appendChild(script);
       }
 
       document.addEventListener('DOMContentLoaded', () => {

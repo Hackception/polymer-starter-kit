@@ -2,18 +2,19 @@
   "entrypoint": "index.html",
   "shell": "src/my-app.html",
   "fragments": [
-    "src/my-view1.html",
-    "src/my-view2.html",
-    "src/my-view3.html",
-    "src/my-view404.html"
+    "src/pages/my-view1-page/my-view1-page.html",
+    "src/pages/my-view2-page/my-view2-page.html",
+    "src/pages/my-view3-page/my-view3-page.html",
+    "src/pages/my-view404-page/my-view404-page.html"
   ],
   "sourceGlobs": [
-    "src/**/*",
+    "data/**/*",
     "images/**/*",
-    "bower.json"
+    "src/**/*"
   ],
   "includeDependencies": [
     "manifest.json",
-    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js",
+    "bower_components/babel-polyfill/browser-polyfill.js"
   ]
 }

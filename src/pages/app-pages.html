@@ -17,12 +17,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <style>
       :host {
-          display: block;
-        }
-        .page {
-          opacity: 0;
-          transition: 0.5s opacity;
-        }
+        display: block;
+      }
+      .page {
+        opacity: 0;
+        transition: 0.5s opacity;
+      }
     </style>
     <iron-pages
       selected="[[page]]"
@@ -36,48 +36,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <my-view3-page id="view3" class="page" app="{{app}}"></my-view3-page>
       <my-view404-page id="404" class="page" app="{{app}}"></my-view404-page>
 
-  </iron-pages>
-</template>
+    </iron-pages>
+  </template>
 
-<script>
-  Polymer({
-    is: 'app-pages',
+  <script>
+    Polymer({
+      is: 'app-pages',
 
-    properties: {
-      app: Object,
-      page: {
-        type: String,
-        reflectToAttribute: true,
-        observer: '_pageChanged'
+      properties: {
+        app: Object,
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged'
+        },
+        route: Object
       },
-      route: Object
-    },
 
-    _pageChanged(page) {
-      if (Polymer.isInstance(this.$[page])) {
-        this.async(function() {
-          this._pageLoaded();
-        });
-      } else {
-        // Async load page import on demand.
-        this.importHref(
-          this.resolveUrl(`${this.$[page].localName}/${this.$[page].localName}.html`),
-          this._pageLoaded,
-          this._pageFailed,
-          true
-        );
-      }
-    },
-    _pageLoaded() {
-      if (this.$[this.page].localName.split('-')[1] !== 'pages') {
-        this.fire('app-page-loaded');
+      _pageChanged(page) {
+        if (Polymer.isInstance(this.$[page])) {
+          this.async(() => {
+            this._pageLoaded();
+          });
+        } else {
+          // Async load page import on demand.
+          this.importHref(
+            this.resolveUrl(`${this.$[page].localName}/${this.$[page].localName}.html`),
+            this._pageLoaded,
+            this._pageFailed,
+            true
+          );
+        }
+      },
+      _pageLoaded() {
         this.$[this.page].style.opacity = 1;
+      },
+      _pageFailed() {
+        this.page = '404';
       }
-    },
-    _pageFailed() {
-      this.page = '404';
-    }
 
-  });
-</script>
+    });
+
+  </script>
 </dom-module>
