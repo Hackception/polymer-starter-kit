@@ -8,20 +8,19 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
+<script>
+  // Create namespace for app behaviors
+  window.AppBehaviors = window.AppBehaviors || {};
+  window.AppConfigs = window.AppConfigs || {};
+
+</script>
+
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components\app-localize-behavior\app-localize-behavior.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="my-icons.html">
+<link rel="import" href="behaviors/app-localize-behavior.html">
+<link rel="import" href="config/app-config-endpoints.html">
+<link rel="import" href="shell/app-shell.html">
 
 <dom-module id="my-app">
   <template>
@@ -64,46 +63,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <app-location route="{{route}}"></app-location>
+    <app-location route="{{_route}}"></app-location>
     <app-route
-        route="{{route}}"
-        pattern="/:page"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
+      route="{{_route}}"
+      pattern="/:page"
+      data="{{_routeData}}"
+    ></app-route>
 
-    <app-drawer-layout fullbleed>
-      <!-- Drawer content -->
-      <app-drawer id="drawer">
-        <app-toolbar>Menu</app-toolbar>
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="view1" href="/view1">View One</a>
-          <a name="view2" href="/view2">View Two</a>
-          <a name="view3" href="/view3">View Three</a>
-        </iron-selector>
-      </app-drawer>
+    <app-shell id="shell"
+      app="{{app}}"
+      page="[[page]]"
+      route="{{_route}}"
+    ></app-shell>
 
-      <!-- Main content -->
-      <app-header-layout has-scrolling-region>
+    <app-breakpoints
+      app="{{app}}"
+    ></app-breakpoints>
 
-        <app-header condenses reveals effects="waterfall">
-          <app-toolbar>
-            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-            <div main-title>{{ localize('pageTitle') }}</div>
-          </app-toolbar>
-        </app-header>
-
-        <iron-pages
-            selected="[[page]]"
-            attr-for-selected="name"
-            fallback-selection="view404"
-            role="main">
-          <my-view1 name="view1"></my-view1>
-          <my-view2 name="view2"></my-view2>
-          <my-view3 name="view3"></my-view3>
-          <my-view404 name="view404"></my-view404>
-        </iron-pages>
-      </app-header-layout>
-    </app-drawer-layout>
   </template>
 
   <script>
@@ -111,47 +87,64 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'my-app',
 
       behaviors: [
-        Polymer.AppLocalizeBehavior
+        AppBehaviors.AppLocalizeBehavior
       ],
 
       properties: {
-        language: {
-          type: String,
-          value: 'en-US',
-          observer: '__languageChanged'
+        app: {
+          type: Object,
+          value: {
+            baseUrl: window.BASE_URL,
+            currentUser: {},
+            name: window.APP_NAME,
+            pageTitle: '',
+            userAuthEmail: '',
+
+            // Settings
+            enforceLogin: true,
+
+            // Responsive handlers using Material Design breakpoints
+            // http://www.google.com/design/spec/layout/adaptive-ui.html#adaptive-ui-breakpoints
+            isTabletWide: window.matchMedia('screen and (min-width:600px)').matches,
+            isLaptopWide: window.matchMedia('screen and (min-width:960px)').matches,
+            isLargeWide: window.matchMedia('screen and (min-width:1600px)').matches,
+            isPrintMode: window.matchMedia('print').matches,
+            isOffline: !navigator.onLine
+          }
         },
-        page: {
-          type: String,
-          reflectToAttribute: true,
-          observer: '_pageChanged'
-        }
+        page: String
       },
 
       observers: [
-        '_routePageChanged(routeData.page)'
+        '_routePageChanged(_routeData.page)'
       ],
 
-      __languageChanged() {
-        this.loadResources(this.resolveUrl(`locales/${this.language}.json`));
+      created() {
+        this.removeAttribute('unresolved');
       },
 
-      _routePageChanged: function(page) {
-        this.page = page || 'view1';
+      ready() {
+        // Listen for online/offline network status
+        Polymer.RenderStatus.afterNextRender(this, () => {
+          this.listen(window, 'online', '_notifyNetworkStatus');
+          this.listen(window, 'offline', '_notifyNetworkStatus');
+        });
+      },
 
-        if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
+      _routePageChanged(page) {
+        if (page) {
+          // Ensures the page exists
+          if (this.$.shell.$.pages.$[page]) {
+            this.page = page;
+          } else {
+            this.page = '404';
+          }
+        } else {
+          this.page = 'home';
         }
-      },
-
-      _pageChanged: function(page) {
-        // Load page import on demand. Show 404 page if fails
-        var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
-        this.importHref(resolvedPageUrl, null, this._showPage404, true);
-      },
-
-      _showPage404: function() {
-        this.page = 'view404';
       }
+
     });
+
   </script>
 </dom-module>

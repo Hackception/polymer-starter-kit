@@ -8,10 +8,10 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="shared-styles.html">
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../theme/shared-styles.html">
 
-<dom-module id="my-view1">
+<dom-module id="my-page-view1">
   <template>
     <style include="shared-styles">
       :host {
@@ -31,7 +31,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
     Polymer({
-      is: 'my-view1'
+      is: 'my-page-view1',
+
+      properties: {
+        active: {
+          type: Boolean,
+          value: false,
+          observer: '_activeChanged'
+        },
+        app: Object,
+        _isLocalesLoaded: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      behaviors: [
+        AppBehaviors.AppLocalizeBehavior
+      ],
+
+      listeners: {
+        'app-resources-loaded': '_onLocalesLoaded'
+      },
+
+      _activeChanged() {
+        if (this.active) {
+          if (this._isLocalesLoaded) {
+            this.set('app.pageTitle', this.localize('home'));
+          } else {
+            this.loadLocales(this.is);
+          }
+        }
+      },
+
+      _onLocalesLoaded(event) {
+        event.stopPropagation();
+        this._isLocalesLoaded = true;
+        // TODO: Resolve slow localize data binding in Firefox
+        //this.style.display = 'block';
+        this.set('app.pageTitle', this.localize('home'));
+      }
+
     });
   </script>
 </dom-module>
