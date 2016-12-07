@@ -100,6 +100,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             pageTitle: '',
             userAuthEmail: '',
 
+            // Additional Configs
+            config: AppConfigs,
+
             // Settings
             enforceLogin: true,
 
@@ -130,7 +133,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.listen(window, 'offline', '_notifyNetworkStatus');
         });
       },
-
       _routePageChanged(page) {
         if (page) {
           // Ensures the page exists
@@ -142,6 +144,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         } else {
           this.page = 'home';
         }
+      },
+
+      _resolveApiBase() {
+        const config = this.app.config;
+        const hostname = window.location.hostname;
+        let apiBaseUrl;
+
+        if (hostname.indexOf('.') === -1) {
+          apiBaseUrl = `${config.protocol}${config.subdomain}${config.domain}`;
+        } else {
+          const subdomain = window.location.hostname.split('.').shift();
+          let apiSubdomain;
+          if (!subdomain.endsWith('-api')) {
+            apiSubdomain = subdomain.concat('-api');
+          }
+
+          if (hostname.endsWith('localhost')) {
+            apiBaseUrl = `${config.protocol}${apiSubdomain}${config.domain}`;
+          } else {
+            apiBaseUrl = window.location.origin.replace(subdomain, apiSubdomain);
+          }
+        }
+
+        this.set('app.config.baseUrl', apiBaseUrl);
       }
 
     });
