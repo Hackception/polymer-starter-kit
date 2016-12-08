@@ -2,7 +2,7 @@
 
   AppEndpoints = {
     apiBase: {
-      protocol: 'https://',
+      protocol: 'https:',
       subdomain: 'subdomain',
       apiSuffix: 'api',
       domain: 'domain.com'
@@ -15,9 +15,14 @@
     let [ subdomain, ...domain] = window.location.hostname.split('.');
 
     // Handle vanity domains (no subdomain)
-    if (!domain.includes('.')) {
+    if (domain.length && !domain.includes('.')) {
       domain.unshift(subdomain);
       subdomain = config.apiSuffix;
+    }
+    // Handle localhost
+    else if (!domain.length) {
+      domain = [subdomain];
+      subdomain = '';
     }
     domain = domain.join('.');
 
@@ -28,19 +33,19 @@
 
       // Swap the protocol, domain and port
       domain = config.domain;
-      delete protocol;
-      delete port;
+      protocol = '';
+      port = '';
 
       // If there's no protocol, use the default
       if (!protocol) { protocol = config.protocol; }
     }
 
     // Add -api if it's missing
-    if (!subdomain.endsWith(config.apiSuffix) {
+    if (!subdomain.endsWith(config.apiSuffix)) {
       subdomain.concat(`-${config.apiSuffix}`);
     }
 
-    AppEndpoints.apiBaseUrl = `${protocol}${subdomain}.${domain}${port}`;
+    AppEndpoints.apiBaseUrl = `${protocol}//${subdomain}.${domain}${port}`;
   }
 
   resolveApiBaseUrl();
