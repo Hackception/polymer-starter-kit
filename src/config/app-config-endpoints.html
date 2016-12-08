@@ -11,8 +11,8 @@
 
   function resolveApiBaseUrl() {
     const config = AppEndpoints.apiBase;
-    const { protocol, hostname, port } = window.location;
-    const [ subdomain, ...domain] = hostname.split('.');
+    const { protocol, port } = window.location;
+    const [ subdomain, ...domain] = window.location.hostname.split('.');
     domain = domain.join('.');
 
 
