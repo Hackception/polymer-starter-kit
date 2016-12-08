@@ -4,15 +4,22 @@
     apiBase: {
       protocol: 'https://',
       subdomain: 'subdomain',
-      apiSuffix: '-api',
+      apiSuffix: 'api',
       domain: 'domain.com'
     }
   };
 
   function resolveApiBaseUrl() {
     const config = AppEndpoints.apiBase;
-    const { protocol, port } = window.location;
-    const [ subdomain, ...domain] = window.location.hostname.split('.');
+    let { protocol, port } = window.location;
+    let [ subdomain, ...domain] = window.location.hostname.split('.');
+
+    // Handle vanity domains (no subdomain)
+    if (!domain.includes('.')) {
+      domain.unshift(subdomain);
+      subdomain = config.apiSuffix;
+    }
+
     domain = domain.join('.');
 
 
@@ -30,7 +37,9 @@
     }
 
     // Add -api if it's missing
-    if (!subdomain.endsWith(config.apiSuffix)) { subdomain.concat(config.apiSuffix); }
+    else if (!subdomain.endsWith(config.apiSuffix) {
+      subdomain.concat(`-${config.apiSuffix}`);
+    }
 
     config.apiBaseUrl = `${protocol}${subdomain}.${domain}${port}`;
   }
