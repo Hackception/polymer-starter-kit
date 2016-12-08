@@ -36,7 +36,7 @@
     }
 
     // Add -api if it's missing
-    else if (!subdomain.endsWith(config.apiSuffix) {
+    if (!subdomain.endsWith(config.apiSuffix) {
       subdomain.concat(`-${config.apiSuffix}`);
     }
 
