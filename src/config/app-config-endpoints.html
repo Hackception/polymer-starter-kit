@@ -19,7 +19,6 @@
       domain.unshift(subdomain);
       subdomain = config.apiSuffix;
     }
-
     domain = domain.join('.');
 
 
@@ -41,7 +40,7 @@
       subdomain.concat(`-${config.apiSuffix}`);
     }
 
-    config.apiBaseUrl = `${protocol}${subdomain}.${domain}${port}`;
+    AppEndpoints.apiBaseUrl = `${protocol}${subdomain}.${domain}${port}`;
   }
 
   resolveApiBaseUrl();
