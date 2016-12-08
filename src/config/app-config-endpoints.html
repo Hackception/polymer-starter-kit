@@ -1,42 +1,40 @@
 <script>
 
   AppEndpoints = {
-    protocol: 'https://',
-    subdomain: 'subdomain',
-    domain: '.domain.com'
+    apiBase: {
+      protocol: 'https://',
+      subdomain: 'subdomain',
+      apiSuffix: '-api',
+      domain: 'domain.com'
+    }
   };
 
-  function polyfillLocationOrigin() {
-    if (window.location.origin) { return; }
-
-    window.location.origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":" + window.location.port : "");
-  }
-
   function resolveApiBaseUrl() {
-    const config = AppEndpoints;
-    const hostname = window.location.hostname;
-    let apiBaseUrl;
+    const config = AppEndpoints.apiBase;
+    const { protocol, hostname, port } = window.location;
+    const [ subdomain, ...domain] = hostname.split('.');
+    domain = domain.join('.');
 
-    if (hostname.indexOf('.') === -1) {
-      apiBaseUrl = `${config.protocol}${config.subdomain}${config.domain}`;
-    } else {
-      const subdomain = window.location.hostname.split('.').shift();
-      let apiSubdomain;
-      if (!subdomain.endsWith('-api')) {
-        apiSubdomain = subdomain.concat('-api');
-      }
 
-      if (hostname.endsWith('localhost')) {
-        apiBaseUrl = `${config.protocol}${apiSubdomain}${config.domain}`;
-      } else {
-        apiBaseUrl = window.location.origin.replace(subdomain, apiSubdomain);
-      }
+    if (domain.includes('localhost')) {
+      // No subdomain, use the supplied one
+      if (!subdomain) { subdomain = config.subdomain; }
+
+      // Swap the protocol, domain and port
+      domain = config.domain;
+      delete protocol;
+      delete port;
+
+      // If there's no protocol, use the default
+      if (!protocol) { protocol = config.protocol; }
     }
 
-    config.baseUrl = apiBaseUrl;
+    // Add -api if it's missing
+    if (!subdomain.endsWith(config.apiSuffix)) { subdomain.concat(config.apiSuffix); }
+
+    config.apiBaseUrl = `${protocol}${subdomain}.${domain}${port}`;
   }
 
-  polyfillLocationOrigin();
   resolveApiBaseUrl();
 
   AppConfigs.endpoints = AppEndpoints;
