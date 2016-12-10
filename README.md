@@ -56,7 +56,7 @@ In addition the command also creates a fallback `build/bundled` folder,
 generated using fragment bundling, suitable for serving from non
 H2/push-compatible servers or to clients that do not support H2/Push.
 
-    polymer build
+    npm run build
 
 ### Preview the build
 
