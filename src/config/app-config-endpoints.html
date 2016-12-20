@@ -10,42 +10,28 @@
   };
 
   function resolveApiBaseUrl() {
-    const config = AppEndpoints.apiBase;
-    let { protocol, port } = window.location;
-    let [ subdomain, ...domain] = window.location.hostname.split('.');
+    let { protocol, port='' } = window.location;
+    const domainParts = window.location.hostname.split('.');
 
-    // Handle vanity domains (no subdomain)
-    if (domain.length && !domain.includes('.')) {
-      domain.unshift(subdomain);
-      subdomain = config.apiSuffix;
-    }
-    // Handle localhost
-    else if (!domain.length) {
-      domain = [subdomain];
-      subdomain = '';
-    }
-    domain = domain.join('.');
+    // Localhost
+    if (domainParts.includes('localhost')) {
+      // We have 2 cases "localhost" and "subdomain.localhost"
+      if (domainParts.length > 1) domainParts[0] = domainParts[0].concat(`-${config.apiSuffix}`);
+      else domainParts.unshift(config.subdomain);
 
-
-    if (domain.includes('localhost')) {
-      // No subdomain, use the supplied one
-      if (!subdomain) { subdomain = config.subdomain; }
-
-      // Swap the protocol, domain and port
-      domain = config.domain;
-      protocol = '';
+      // The last part will always be localhost since that's what determines the machine it's routed to, replace it
+      domainParts[domainParts.length - 1] = config.domain;
       port = '';
-
-      // If there's no protocol, use the default
-      if (!protocol) { protocol = config.protocol; }
+      protocol = config.protocol;
+    } else {
+      // TODO: Drop this case when NGINX is doing the hosted redirects
+      // This is all of our other environments: "sub.domain.com" or "domain.com"
+      if (domainParts.length === 2) domainParts.unshift(config.apiSuffix);
+      else domainParts[0] = domainParts[0].concat(`-${config.apiSuffx}`);
     }
 
-    // Add -api if it's missing
-    if (!subdomain.endsWith(config.apiSuffix)) {
-      subdomain.concat(`-${config.apiSuffix}`);
-    }
-
-    AppEndpoints.apiBaseUrl = `${protocol}//${subdomain}.${domain}${port}`;
+    const domain = domainParts.join('.');
+    AppEndpoints.apiBaseUrl = `${protocol}//${domain}${port}`;
   }
 
   resolveApiBaseUrl();
