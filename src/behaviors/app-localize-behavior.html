@@ -13,7 +13,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <script>
 
-  AppLocalizeBehaviorImpl = {
+  // Define the behavior
+  AppBehaviors.AppLocalizeBehavior = [Polymer.AppLocalizeBehavior, {
 
     __defaultLocale: 'en',
 
@@ -25,7 +26,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         type: Object,
         value() {
           return {
-            number: { USD: { style: 'currency', currency: 'USD' } }
+            number: {
+              USD: {
+                style: 'currency',
+                currency: 'USD'
+              }
+            }
           };
         }
       },
@@ -57,9 +63,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       this.loadResources(`${window.BASE_URL}data/locales/${this.language}/${element}.json`);
     }
 
-  };
-
-  // Define the behavior
-  AppBehaviors.AppLocalizeBehavior = [Polymer.AppLocalizeBehavior, AppLocalizeBehaviorImpl];
+  }];
 
 </script>
