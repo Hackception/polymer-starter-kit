@@ -1,6 +1,6 @@
 <script>
 
-  AppEndpoints = {
+  const AppEndpoints = {
     apiBase: {
       protocol: 'https:',
       subdomain: 'subdomain',
@@ -10,7 +10,8 @@
   };
 
   function resolveApiBaseUrl() {
-    let { protocol, port='' } = window.location;
+    const config = AppEndpoints.apiBase;
+    let {protocol, port = ''} = window.location;
     const domainParts = window.location.hostname.split('.');
 
     // Localhost
@@ -23,11 +24,12 @@
       domainParts[domainParts.length - 1] = config.domain;
       port = '';
       protocol = config.protocol;
-    } else {
-      // TODO: Drop this case when NGINX is doing the hosted redirects
+    } else if (domainParts.length === 2) {
+      // TODO: Drop the below cases when NGINX is doing the hosted redirects
       // This is all of our other environments: "sub.domain.com" or "domain.com"
-      if (domainParts.length === 2) domainParts.unshift(config.apiSuffix);
-      else domainParts[0] = domainParts[0].concat(`-${config.apiSuffx}`);
+      domainParts.unshift(config.apiSuffix);
+    } else {
+      domainParts[0] = domainParts[0].concat(`-${config.apiSuffx}`);
     }
 
     const domain = domainParts.join('.');
@@ -36,6 +38,6 @@
 
   resolveApiBaseUrl();
 
-  AppConfigs.endpoints = AppEndpoints;
+  window.AppConfigs.endpoints = AppEndpoints;
 
 </script>
