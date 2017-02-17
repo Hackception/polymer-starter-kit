@@ -120,6 +120,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       // Load webcomponentsjs polyfill if browser does not support native Web Components
       (() => {
+        /**
+         * Handles the initial loading of imports.
+         */
         function onload() {
           // For native Imports, manually fire WebComponentsReady so user code
           // can use the same code path for native and polyfill'd imports.
