@@ -9,6 +9,9 @@
     }
   };
 
+  /**
+   * Resolves the base url for API rest calls by appending an apiSuffix as needed.
+   */
   function resolveApiBaseUrl() {
     const config = AppEndpoints.apiBase;
     let {protocol, port = ''} = window.location;

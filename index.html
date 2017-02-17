@@ -14,6 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <head>
     <base href="/">
     <meta charset="utf-8">
+    <meta name="generator" content="Polymer Starter Kit">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
     <title>My App</title>
@@ -114,12 +115,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // Setup Polymer options
       window.Polymer = {
         dom: 'shadow',
-        lazyRegister: 'max',
-        useNativeCSSProperties: true
+        lazyRegister: 'max'
       };
 
       // Load webcomponentsjs polyfill if browser does not support native Web Components
       (() => {
+        /**
+         * Handles the initial loading of imports.
+         */
         function onload() {
           // For native Imports, manually fire WebComponentsReady so user code
           // can use the same code path for native and polyfill'd imports.
@@ -159,7 +162,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       document.addEventListener('DOMContentLoaded', () => {
         if (window._satellite) window._satellite.pageBottom();
       });
-
     </script>
   </body>
 
