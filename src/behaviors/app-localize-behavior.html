@@ -15,8 +15,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // Ensure the namespace exists
   window.AppBehaviors = window.AppBehaviors || {};
 
-  // Define the behavior
-  window.AppBehaviors.AppLocalizeBehavior = [Polymer.AppLocalizeBehavior, {
+  /**
+   * @polymerBehavior AppBehaviors.AppLocalizeBehavior
+   */
+  AppBehaviors.AppLocalizeBehavior = [Polymer.AppLocalizeBehavior, {
 
     __defaultLocale: 'en',
 
