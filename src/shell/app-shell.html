@@ -9,6 +9,7 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../my-icons.html">
 
+<link rel="import" href="../behaviors/app-localize-behavior.html">
 <link rel="import" href="../pages/app-pages.html">
 
 <dom-module id="app-shell">
@@ -78,7 +79,7 @@
       is: 'app-shell',
 
       behaviors: [
-        window.AppBehaviors.AppLocalizeBehavior
+        AppBehaviors.AppLocalizeBehavior
       ],
 
       properties: {
