@@ -21,6 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="behaviors/app-localize-behavior.html">
 <link rel="import" href="config/app-config-endpoints.html">
 <link rel="import" href="shell/app-shell.html">
+<link rel="import" href="app-breakpoints.html">
 
 <dom-module id="my-app">
   <template>
@@ -109,7 +110,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             isOffline: !navigator.onLine
           }
         },
-        page: String
+        page: String,
+        _routeData: Object
       },
 
       observers: [
