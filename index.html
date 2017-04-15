@@ -107,14 +107,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="/bower_components/babel-polyfill/browser-polyfill.js" async></script>
     <script>
       (() => {
-        if (window.Polymer) {
-          return;
-        }
-
-        if (window.performance && performance.mark) performance.mark('index.html');
-
         // Setup Polymer options
-        window.Polymer = {
+        window.Polymer = window.Polymer || {
           dom: 'shadow',
           lazyRegister: true
         };
@@ -156,6 +150,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       })();
     </script>
+    <noscript>
+      Please enable Javascript to view this website.
+    </noscript>
   </body>
 
 </html>
