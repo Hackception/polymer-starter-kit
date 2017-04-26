@@ -9,7 +9,7 @@ addons:
     pckages:
 node_js:
   - stable
-  - 6
+  - '6'
 install:
   - npm install -g polymer-cli
   - polymer install
