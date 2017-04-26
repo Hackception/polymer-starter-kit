@@ -17,5 +17,10 @@
     "bower_components/babel-polyfill/browser-polyfill.js",
     "bower_components/SpinKit/css/spinners/7-three-bounce.css",
     "bower_components/normalize-css/normalize.css"
-  ]
+  ],
+  "lint": {
+    "rules": [
+      "polymer-1"
+    ]
+  }
 }
