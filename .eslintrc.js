@@ -20,7 +20,10 @@ module.exports = {
       ignoreUrls: true,
       ignorePattern: '^goog\.(module|require)',
     }],
-    'new-cap': ['error', { 'capIsNewExceptions': ['Polymer'], 'capIsNewExceptionPattern': 'Mixin$' }],
+    'new-cap': ['error', {
+      'capIsNewExceptions': ['Polymer'],
+      'capIsNewExceptionPattern': 'Mixin$',
+    }],
     'no-unused-expressions': [2, {
       allowShortCircuit: true,
       allowTernary: false,
