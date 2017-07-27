@@ -31,10 +31,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <script>
       describe('my-view1 tests', function() {
-        it('should have 1 in circle', function() {
+        it('should be initialized', function() {
           const myView = fixture('BasicView');
-          const circle = myView.shadowRoot.querySelector('.circle');
-          expect(circle.textContent).to.equal('1');
+          expect(myView.localName).to.equal('my-page-view1');
         });
       });
     </script>
