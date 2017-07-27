@@ -11,7 +11,7 @@ cache:
   directories:
     - node_modules
 install:
-  - npm install -g polymer-cli eslint
+  - npm install -g polymer-cli
   - npm install
   - polymer install
 before_script:
