@@ -18,29 +18,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
-    <link rel="import" href="../../bower_components/polymer/polymer.html">
 
     <!-- Import the element to test -->
-    <link rel="import" href="../src/pages/my-page-view1/my-page-view1.html">
+    <link rel="import" href="../src/pages/my-page-view1.html">
   </head>
   <body>
-    <test-fixture id="basic">
+    <test-fixture id="BasicView">
       <template>
         <my-page-view1></my-page-view1>
       </template>
     </test-fixture>
 
     <script>
-      describe('my-view1 tests', () => {
-        let element;
-
-        beforeEach(() => {
-          element = fixture('basic');
-        });
-
-        it('Number in circle should be 1', () => {
-          const circle = element.$$('.circle');
-          expect(circle.textContent).to.equal('1');
+      describe('my-view1 tests', function() {
+        it('should be initialized', function() {
+          const myView = fixture('BasicView');
+          expect(myView.localName).to.equal('my-page-view1');
         });
       });
     </script>

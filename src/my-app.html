@@ -1,44 +1,42 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
-<script>
-  // Create namespace for app behaviors
-  window.AppBehaviors = window.AppBehaviors || {};
-  window.AppConfigs = window.AppConfigs || {};
-
-</script>
-
-<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="behaviors/app-localize-behavior.html">
-<link rel="import" href="config/app-config-endpoints.html">
-<link rel="import" href="shell/app-shell.html">
-<link rel="import" href="app-breakpoints.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/lazy-imports/lazy-imports-mixin.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="my-icons.html">
+
 
 <dom-module id="my-app">
+  <link rel="lazy-import" group="view1" href="pages/my-page-view1.html">
+  <link rel="lazy-import" group="view404" href="pages/my-page-view404.html">
   <template>
     <style>
       :host {
-        --app-primary-color: #4285f4;
-        --app-secondary-color: black;
+        --app-primary-color: #4285F4;
+        --app-secondary-color: #000;
 
         display: block;
       }
 
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+
       app-header {
-        color: #fff;
+        color: #FFF;
         background-color: var(--app-primary-color);
       }
+
       app-header paper-icon-button {
-        --paper-icon-button-ink-color: white;
+        --paper-icon-button-ink-color: #FFF;
       }
 
       .drawer-list {
@@ -54,92 +52,115 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       .drawer-list a.iron-selected {
-        color: black;
+        color: #000;
         font-weight: bold;
       }
     </style>
 
-    <app-location route="{{_route}}"></app-location>
+    <app-location
+      route="{{route}}"
+      url-space-regex="^[[rootPath]]"
+    ></app-location>
     <app-route
-      route="{{_route}}"
-      pattern="/:page"
-      data="{{_routeData}}"
+      route="{{route}}"
+      pattern="[[rootPath]]:page"
+      data="{{routeData}}"
+      tail="{{subroute}}"
     ></app-route>
 
-    <app-shell id="shell"
-      app="{{app}}"
-      page="[[page]]"
-      route="{{_route}}"
-    ></app-shell>
+    <app-drawer-layout fullbleed narrow="{{narrow}}">
+      <!-- Drawer content -->
+      <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
+        <app-toolbar>Menu</app-toolbar>
+        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+          <a name="view1" href="[[rootPath]]view1">View One</a>
+        </iron-selector>
+      </app-drawer>
 
-    <app-breakpoints
-      app="{{app}}"
-    ></app-breakpoints>
+      <!-- Main content -->
+      <app-header-layout has-scrolling-region>
+
+        <app-header slot="header" condenses reveals effects="waterfall">
+          <app-toolbar>
+            <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
+            <div main-title>My App</div>
+          </app-toolbar>
+        </app-header>
+
+        <iron-pages
+            selected="[[page]]"
+            attr-for-selected="name"
+            fallback-selection="view404"
+            role="main">
+          <my-page-view1 name="view1"></my-page-view1>
+          <my-page-view404 name="view404" root-path="[[rootPath]]"></my-page-view404>
+        </iron-pages>
+      </app-header-layout>
+    </app-drawer-layout>
   </template>
 
   <script>
-    Polymer({
-      is: 'my-app',
+    /**
+     * @extends Polymer.Element
+     * @appliesMixin Polymer.LazyImportsMixin
+     */
+    class MyApp extends Polymer.LazyImportsMixin(Polymer.Element) {
+      // eslint-disable-next-line require-jsdoc
+      static get is() {
+        return 'my-app';
+      }
+      // eslint-disable-next-line require-jsdoc
+      static get properties() {
+        return {
+          page: {
+            type: String,
+            reflectToAttribute: true,
+            observer: '_pageChanged',
+          },
+          routeData: Object,
+          subroute: String,
+          // This shouldn't be neccessary, but the Analyzer isn't picking up
+          // Polymer.Element#rootPath
+          rootPath: String,
+        };
+      }
+      // eslint-disable-next-line require-jsdoc
+      static get observers() {
+        return [
+          '_routePageChanged(routeData.page)',
+        ];
+      }
 
-      behaviors: [
-        AppBehaviors.AppLocalizeBehavior
-      ],
-
-      properties: {
-        app: {
-          type: Object,
-          value: {
-            currentUser: {},
-            pageTitle: '',
-            userAuthEmail: '',
-
-            // Additional Configs
-            config: AppConfigs,
-
-            // Settings
-            enforceLogin: true,
-
-            // Responsive handlers using Material Design breakpoints
-            // http://www.google.com/design/spec/layout/adaptive-ui.html#adaptive-ui-breakpoints
-            isTabletWide: window.matchMedia('screen and (min-width:600px)').matches,
-            isLaptopWide: window.matchMedia('screen and (min-width:960px)').matches,
-            isLargeWide: window.matchMedia('screen and (min-width:1600px)').matches,
-            isPrintMode: window.matchMedia('print').matches,
-            isOffline: !navigator.onLine
-          }
-        },
-        page: String,
-        _routeData: Object
-      },
-
-      observers: [
-        '_routePageChanged(_routeData.page)'
-      ],
-
-      created() {
-        this.removeAttribute('unresolved');
-      },
-      ready() {
-        // Listen for online/offline network status
-        Polymer.RenderStatus.afterNextRender(this, () => {
-          this.listen(window, 'online', '_notifyNetworkStatus');
-          this.listen(window, 'offline', '_notifyNetworkStatus');
-        });
-      },
-
+      /**
+       * Handles page change
+       * @param {String} page
+       */
       _routePageChanged(page) {
-        if (page) {
-          // Ensures the page exists
-          if (this.$.shell.$.pages.$[page]) {
-            this.page = page;
-          } else {
-            this.page = '404';
-          }
-        } else {
-          this.page = 'home';
+        // If no page was found in the route data, page will be an empty string.
+        // Deault to 'view1' in that case.
+        this.page = page || 'view1';
+
+        // Close a non-persistent drawer when the page & route are changed.
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close();
         }
       }
-    });
 
+      /**
+       * Lazily Imports page fragment
+       * @param {String} page
+       */
+      _pageChanged(page) {
+        // Load page import on demand. Show 404 page if fails
+        this.importLazyGroup(page).
+          then((results) => {
+            if (results.failed.length > 0 || results.loaded.length < 1) {
+              this.page = 'view404';
+            }
+          });
+      }
+    }
+
+    customElements.define(MyApp.is, MyApp);
   </script>
 </dom-module>

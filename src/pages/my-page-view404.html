@@ -1,0 +1,35 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="my-view404">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    Oops you hit a 404. <a href="[[rootPath]]">Head back to home.</a>
+  </template>
+
+  <script>
+    /**
+     * @extends Polymer.Element
+     */
+    class MyPageView404 extends Polymer.Element {
+      // eslint-disable-next-line require-jsdoc
+      static get is() {
+        return 'my-page-view404';
+      }
+      // eslint-disable-next-line require-jsdoc
+      static get properties() {
+        return {
+          // This shouldn't be neccessary, but the Analyzer isn't picking up
+          // Polymer.Element#rootPath
+          rootPath: String,
+        };
+      }
+    }
+
+    customElements.define(MyPageView404.is, MyPageView404);
+  </script>
+</dom-module>

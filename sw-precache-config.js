@@ -12,31 +12,10 @@
 
 module.exports = {
   staticFileGlobs: [
-    '/index.html',
-    '/manifest.json',
-    '/bower_components/webcomponentsjs/webcomponents-lite.min.js',
-    '/bower_components/babel-polyfill/babel-polyfill.js',
-    '/bower_components/SpinKit/css/spinners/7-three-bounce.css',
-    '/bower_components/normalize-css/normalize.css',
-    'src/**/*.html',
-    'images/**/*.{ico|jpeg|jpg|png}',
-    'data/**/*.json'
+    'index.html',
+    'manifest.json',
+    'bower_components/webcomponentsjs/*',
   ],
   navigateFallback: 'index.html',
-  runtimeCaching: [{
-    urlPattern: /\/api\/rest\//,
-    // Effectively "stale while revalidate".
-    handler: 'fastest',
-    options: {
-      cache: {
-        name: 'api-cache',
-        // Use sw-toolbox's LRU expiration.
-        maxEntries: 25
-      }
-    }
-  }, {
-    // Use a network first strategy for everything else.
-    default: 'networkFirst'
-  }],
-  verbose: true
+  verbose: true,
 };

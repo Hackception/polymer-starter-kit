@@ -1,0 +1,29 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="my-view1">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <h1>View One</h1>
+    <p>Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
+    <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+  </template>
+
+  <script>
+    /**
+     * @extends Polymer.Element
+     */
+    class MyPageView1 extends Polymer.Element {
+      // eslint-disable-next-line require-jsdoc
+      static get is() {
+        return 'my-page-view1';
+      }
+    }
+
+    customElements.define(MyPageView1.is, MyPageView1);
+  </script>
+</dom-module>
