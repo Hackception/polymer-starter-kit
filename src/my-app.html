@@ -15,8 +15,8 @@
 
 
 <dom-module id="my-app">
-  <link rel="lazy-import" group="view1" href="pages/my-view1.html">
-  <link rel="lazy-import" group="view404" href="pages/my-view404.html">
+  <link rel="lazy-import" group="view1" href="pages/my-page-view1.html">
+  <link rel="lazy-import" group="view404" href="pages/my-page-view404.html">
   <template>
     <style>
       :host {
@@ -92,8 +92,8 @@
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
-          <my-view1 name="view1"></my-view1>
-          <my-view404 name="view404" root-path="[[rootPath]]"></my-view404>
+          <my-page-view1 name="view1"></my-page-view1>
+          <my-page-view404 name="view404" root-path="[[rootPath]]"></my-page-view404>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -105,9 +105,11 @@
      * @appliesMixin Polymer.LazyImportsMixin
      */
     class MyApp extends Polymer.LazyImportsMixin(Polymer.Element) {
+      // eslint-disable-next-line require-jsdoc
       static get is() {
         return 'my-app';
       }
+      // eslint-disable-next-line require-jsdoc
       static get properties() {
         return {
           page: {
@@ -122,13 +124,17 @@
           rootPath: String,
         };
       }
-
+      // eslint-disable-next-line require-jsdoc
       static get observers() {
         return [
           '_routePageChanged(routeData.page)',
         ];
       }
 
+      /**
+       * Handles page change
+       * @param {String} page
+       */
       _routePageChanged(page) {
         // If no page was found in the route data, page will be an empty string.
         // Deault to 'view1' in that case.
@@ -140,6 +146,10 @@
         }
       }
 
+      /**
+       * Lazily Imports page fragment
+       * @param {String} page
+       */
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
         this.importLazyGroup(page).

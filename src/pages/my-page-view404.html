@@ -15,10 +15,12 @@
     /**
      * @extends Polymer.Element
      */
-    class MyView404 extends Polymer.Element {
+    class MyPageView404 extends Polymer.Element {
+      // eslint-disable-next-line require-jsdoc
       static get is() {
-        return 'my-view404';
+        return 'my-page-view404';
       }
+      // eslint-disable-next-line require-jsdoc
       static get properties() {
         return {
           // This shouldn't be neccessary, but the Analyzer isn't picking up
@@ -28,6 +30,6 @@
       }
     }
 
-    customElements.define(MyView404.is, MyView404);
+    customElements.define(MyPageView404.is, MyPageView404);
   </script>
 </dom-module>
