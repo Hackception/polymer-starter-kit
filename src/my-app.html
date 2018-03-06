@@ -156,16 +156,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _pageChanged(page) {
+        performance.mark('START');
         // Load page import on demand. Show 404 page if fails
+        performance.mark('beginResolve');
         const resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+        performance.mark('endResolve');
         Polymer.importHref(
             resolvedPageUrl,
-            null,
+            this._end.bind(this),
             this._showPage404.bind(this),
             true);
       }
 
+      _end() {
+        performance.mark('END');
+
+        console.log('MEASUREMENTS');
+        console.log('------------');
+        console.log('Total\tResolve\tImport')
+        console.log(performance.measure('TOTAL', 'START', 'END'), performance.measure('RESOLVE', 'beginResolve', 'endResolve'), performance.measure('IMPORT', 'endResolve', 'END'))
+      }
+
       _showPage404() {
+        this.end();
         this.page = 'view404';
       }
     }
